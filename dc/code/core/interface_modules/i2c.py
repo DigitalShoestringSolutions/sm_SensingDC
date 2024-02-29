@@ -4,6 +4,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
+pip_requirements = {"smbus2":"0.4.3"}
+
 class I2C:
     def __init__(self,config):
         self.bus = config.get('bus', 1)

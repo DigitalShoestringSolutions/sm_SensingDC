@@ -8,6 +8,7 @@ import asyncio
 
 logger = logging.getLogger(__name__)
 
+pip_requirements = {"pymodbus":"3.5.4"}
 
 class ModbusTCPSync:
     def __init__(self, config):

@@ -1,5 +1,7 @@
 import spidev
 
+pip_requirements = {"spidev":"3.6"}
+
 class SPI:
     def __init__(self,config):
         self.bus = config.get('bus', 0)

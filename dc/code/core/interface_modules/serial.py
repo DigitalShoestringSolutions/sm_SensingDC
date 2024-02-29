@@ -1,5 +1,8 @@
 import serial
 
+pip_requirements = {"pyserial":"3.5"}
+
+
 class Serial:
     PARITY = {
         "none":serial.PARITY_NONE,
