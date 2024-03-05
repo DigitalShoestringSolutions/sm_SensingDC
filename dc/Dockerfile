@@ -27,6 +27,6 @@ COPY ./requirements.txt /
 RUN pip3 install -r requirements.txt
 WORKDIR /app
 ADD ./code/ /app
-RUN python generate_local_requirements.py && pip3 install -r generated_requirements.txt
+RUN python utilities/generate_local_requirements.py && pip3 install -r generated_requirements.txt
 
 CMD [ "python3", "/app/main.py"]

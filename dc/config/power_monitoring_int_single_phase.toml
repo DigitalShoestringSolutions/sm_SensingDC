@@ -14,21 +14,20 @@
 [device.mfm1.config]
     slave_id=1
 [device.mfm1.variables]
-    I_in = "current_rms"
-    V_in = "measured_phase_voltage"
-    thd_v = "thd_v"
-    thd_i = "thd_i"
+    I1 = "current_rms"
+    V1 = "measured_phase_voltage"
+    power_real = "power"
 
 #=-= Define Calculation Modules =-=
-[calculation.power]
-    module="gen_electrical"
-    class="PowerToVoltageCurrent"
-[calculation.power.config]
-    phases = 1
-[calculation.power.variables]
-    power_in = "power"
-    rms_current_out = "current_rms"
-    rms_phase_voltage_out = "phase_voltage"
+# [calculation.power]
+#     module="gen_electrical"
+#     class="PowerToVoltageCurrent"
+# [calculation.power.config]
+#     phases = 1
+# [calculation.power.variables]
+#     power_in = "power"
+#     rms_current_out = "current_rms"
+#     rms_phase_voltage_out = "phase_voltage"
 
 [calculation.set_voltage]
     module="gen_constants"
@@ -54,15 +53,19 @@
     pipeline = "power_pipeline"
     constants = {'phase'='single'}
 
-[output]
+[output.overall]
     path = "power_monitoring/{{machine}}"
-[output.spec]
+[output.overall.spec]
     timestamp = '$.timestamp'
+    machine = "#Machine_1"
     power = '$.power'
+    
+[output.single_phase]
+    path = "power_monitoring/{{machine}}/{{phase}}"
+[output.single_phase.spec]
     current = "$.current_rms"
     voltage = "$.measured_phase_voltage"
     phase = "$.phase"
-    machine = "#Machine_1"
 
 [mqtt]
     broker = "mqtt.docker.local"

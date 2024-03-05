@@ -91,8 +91,9 @@ class BuildingBlockFramework(multiprocessing.Process):
                 delay, output_vars = await self.measurement_module.loop()
 
                 if output_vars:
-                    payload = self.generate_output(output_vars, self.output_config)
-                    self.dispatch(payload)
+                    messages = self.generate_output(output_vars, self.output_config)
+                    for message in messages:
+                        self.dispatch(message)
 
                 await asyncio.sleep(delay)
             except core.exceptions.SampleError as e:
@@ -192,14 +193,18 @@ class BuildingBlockFramework(multiprocessing.Process):
         return datetime.datetime.now(tz=tz).isoformat()
 
     def generate_output(self, var_dict, output_config):
-        timestamp = self.get_timestamp()
+        dataset = {**var_dict}
 
-        dataset = {**var_dict, "timestamp": timestamp}
+        if "timestamp" not in dataset:
+            dataset["timestamp"] = self.get_timestamp()
 
-        payload = core.output.generate_json_path_message(dataset, output_config['spec'])
-        # payload = core.output.generate_basic_output(dataset,output_spec)
+        outputs = []
+        for _output_item, output_item_config in output_config.items():
+            payload = core.output.generate_json_path_message(dataset, output_item_config['spec'])
+            # payload = core.output.generate_basic_output(dataset,output_spec)
+            outputs.append({'path': output_item_config.get('path', ""), 'payload': payload})
 
-        return {'path': output_config.get('path', ""), 'payload': payload}
+        return outputs
 
     def dispatch(self, output):
         logger.debug(f"dispatch to {output.get('path', '')} of {output['payload']}")

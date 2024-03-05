@@ -28,19 +28,53 @@ logger = logging.getLogger(__name__)
 
 class HOBUT_850_LTHN:
     def __init__(self, config, variables):
-        self.register_voltage = config.get("register_voltage", 0x0006)
-        self.register_current = config.get("register_current", 0x000C)
-        self.register_thd_V = config.get("register_thd_V", 0x0054)
-        self.register_thd_I = config.get("register_thd_I", 0x005A)
+        self.regkW = config.get("register_total_real_power",0x0012)
+        self.regkVA = config.get("register_total_reactive_power",0x0016)
+        self.regkVAR = config.get("register_total_apparent_power",0x0014)
+        self.regHz = config.get("register_average_frequency",0x001E)
+        self.regPF = config.get("register_average_power_factor",0x0018)
+
+        self.regV1 = config.get("register_voltage_phase_1", 0x0006)
+        self.regV2 = config.get("register_voltage_phase_2", 0x0008)
+        self.regV3 = config.get("register_voltage_phase_3", 0x000A)
+
+        self.regI1 = config.get("register_current_phase_1", 0x000C)
+        self.regI2 = config.get("register_current_phase_2", 0x000E)
+        self.regI3 = config.get("register_current_phase_3", 0x0010)
+
+        self.regTHD_V1 = config.get("register_thd_V1", 0x0054)
+        self.regTHD_V2 = config.get("register_thd_V2", 0x0056)
+        self.regTHD_V3 = config.get("register_thd_V3", 0x0058)
+
+        self.regTHD_I1 = config.get("register_thd_I1", 0x005A)
+        self.regTHD_I2 = config.get("register_thd_I2", 0x005C)
+        self.regTHD_I3 = config.get("register_thd_I3", 0x005E)
 
         self.slave_id = config.get("slave_id")
 
         self.modbus = None
 
-        self.current_in = variables['I_in']
-        self.voltage_in = variables['V_in']
-        self.thd_v_in = variables['thd_v']
-        self.thd_i_in = variables['thd_i']
+        self.varkW = variables['power_real']
+        self.varkVA = variables['power_reactive']
+        self.varkVAR = variables['power_apparent']
+        self.varHz = variables['frequency']
+        self.varPF = variables['PF']
+
+        self.varI1 = variables['I1']
+        self.varI2 = variables['I2']
+        self.varI3 = variables['I3']
+
+        self.varV1 = variables['V1']
+        self.varV2 = variables['V2']
+        self.varV3 = variables['V3']
+
+        self.varTHD_V1 = variables['THD_V1']
+        self.varTHD_V2 = variables['THD_V2']
+        self.varTHD_V3 = variables['THD_V3']
+
+        self.varTHD_I1 = variables['THD_I1']
+        self.varTHD_I2 = variables['THD_I2']
+        self.varTHD_I3 = variables['THD_I3']
 
     def initialise(self, interface):
         self.modbus = interface
@@ -49,15 +83,51 @@ class HOBUT_850_LTHN:
         try:
             readings = {}
 
-            readings[self.current_in] = await self.read_modbus_register(self.register_current)
-            readings[self.voltage_in] = await self.read_modbus_register(self.register_voltage)
-            readings[self.thd_v_in] = await self.read_modbus_register(self.register_thd_V)
-            readings[self.thd_i_in] = await self.read_modbus_register(self.register_thd_I)
+            if self.varI1 is not None:
+                readings[self.varI1] = await self.read_modbus_register(self.regI1)
+            if self.varI2 is not None:
+                readings[self.varI2] = await self.read_modbus_register(self.regI2)
+            if self.varI3 is not None:
+                readings[self.varI3] = await self.read_modbus_register(self.regI3)
+
+            if self.varV1 is not None:
+                readings[self.varV1] = await self.read_modbus_register(self.regV1)
+            if self.varV2 is not None:
+                readings[self.varV2] = await self.read_modbus_register(self.regV2)
+            if self.varV3 is not None:
+                readings[self.varV3] = await self.read_modbus_register(self.regV3)
+
+            if self.varTHD_V1 is not None:
+                readings[self.varTHD_V1] = await self.read_modbus_register(self.regTHD_V1)
+            if self.varTHD_V2 is not None:
+                readings[self.varTHD_V2] = await self.read_modbus_register(self.regTHD_V2)
+            if self.varTHD_V3 is not None:
+                readings[self.varTHD_V3] = await self.read_modbus_register(self.regTHD_V3)
+
+            if self.varTHD_I1 is not None:
+                readings[self.varTHD_I1] = await self.read_modbus_register(self.regTHD_I1)
+            if self.varTHD_I2 is not None:
+                readings[self.varTHD_I2] = await self.read_modbus_register(self.regTHD_I2)
+            if self.varTHD_I3 is not None:
+                readings[self.varTHD_I3] = await self.read_modbus_register(self.regTHD_I3)
+
+            if self.varkW is not None:
+                readings[self.varkW] = await self.read_modbus_register(self.regkW)
+            if self.varkVA is not None:
+                readings[self.varkVA] = await self.read_modbus_register(self.regkVA)
+            if self.varkVAR is not None:
+                readings[self.varkVAR] = await self.read_modbus_register(self.regkVAR)
+            if self.varHz is not None:
+                readings[self.varHz] = await self.read_modbus_register(self.regHz)
+            if self.varPF is not None:
+                readings[self.varPF] = await self.read_modbus_register(self.regPF)
 
             return readings
         except Exception as e:
             logger.error(traceback.format_exc())
             raise e
+    
+
 
     async def read_modbus_register(self, register):
         result = self.modbus.read_register(register, 4, self.slave_id)
