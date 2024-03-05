@@ -54,27 +54,27 @@ class HOBUT_850_LTHN:
 
         self.modbus = None
 
-        self.varkW = variables['power_real']
-        self.varkVA = variables['power_reactive']
-        self.varkVAR = variables['power_apparent']
-        self.varHz = variables['frequency']
-        self.varPF = variables['PF']
+        self.varkW = variables.get('power_real')
+        self.varkVA = variables.get('power_reactive')
+        self.varkVAR = variables.get('power_apparent')
+        self.varHz = variables.get('frequency')
+        self.varPF = variables.get('PF')
 
-        self.varI1 = variables['I1']
-        self.varI2 = variables['I2']
-        self.varI3 = variables['I3']
+        self.varI1 = variables.get('I1')
+        self.varI2 = variables.get('I2')
+        self.varI3 = variables.get('I3')
 
-        self.varV1 = variables['V1']
-        self.varV2 = variables['V2']
-        self.varV3 = variables['V3']
+        self.varV1 = variables.get('V1')
+        self.varV2 = variables.get('V2')
+        self.varV3 = variables.get('V3')
 
-        self.varTHD_V1 = variables['THD_V1']
-        self.varTHD_V2 = variables['THD_V2']
-        self.varTHD_V3 = variables['THD_V3']
+        self.varTHD_V1 = variables.get('THD_V1')
+        self.varTHD_V2 = variables.get('THD_V2')
+        self.varTHD_V3 = variables.get('THD_V3')
 
-        self.varTHD_I1 = variables['THD_I1']
-        self.varTHD_I2 = variables['THD_I2']
-        self.varTHD_I3 = variables['THD_I3']
+        self.varTHD_I1 = variables.get('THD_I1')
+        self.varTHD_I2 = variables.get('THD_I2')
+        self.varTHD_I3 = variables.get('THD_I3')
 
     def initialise(self, interface):
         self.modbus = interface
