@@ -1,8 +1,12 @@
 services:
     dc:
-        extends:
-            file: dc/app.yml
-            service: app
+        build: .
+        command: ["python","main.py","--log","debug"]
+        privileged: true
+        volumes:
+            - ./config:/app/config
+        environment:
+            - DCSM_CONFIG=/app/config/old_config.toml
         networks:
             internal:
                 aliases:
