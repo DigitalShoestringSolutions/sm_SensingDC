@@ -1,4 +1,5 @@
 paho-mqtt==1.6.1 # MQTT client for publishing
+bmp280==0.0.4    # Pimoroni's driver for the T/RH sensor
 
 # GPIO 
 # Outside of a venv, gpiozero works great on a pi5. 
