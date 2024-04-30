@@ -1,11 +1,12 @@
-paho-mqtt==1.6.1
-chevron==0.14.0
-tomli==2.0.1
-pyzmq==23.2.1
-jsonpath-rw==1.4.0
-packaging==23.2 
+paho-mqtt==1.6.1 # MQTT client for publishing
 
-# smbus2==0.4.3
-# spidev==3.6
-# pyserial==3.5
-# pymodbus==3.5.4
+# GPIO 
+# Outside of a venv, gpiozero works great on a pi5. 
+# Getting it to work inside is harder.
+gpiozero==2.0.1  # cross-platform GPIO interface
+
+# Experiments to offer a Pin Factory (hardwre interface) to gpiozero:
+lgpio==0.2.2.0
+#rpi-lgpio 		# on a pi5, "this module can only be run on a raspberry pi!"
+#rpi.gpio  		# on a pi5, "this module can only be run on a raspberry pi!"
+#pigpio==1.78		# on a pi5, fails with many errors.

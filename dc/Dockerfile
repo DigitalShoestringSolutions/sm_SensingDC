@@ -21,12 +21,12 @@
 #
 # ----------------------------------------------------------------------
 
-FROM python:3.9
+FROM python:3.11.2
 
 COPY ./requirements.txt /
-RUN pip3 install -r requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 WORKDIR /app
-ADD ./code/ /app
-RUN python utilities/generate_local_requirements.py && pip3 install -r generated_requirements.txt
+ADD ./code /app
 
-CMD [ "python3", "/app/main.py"]
+CMD ["python3", "/app/main.py"]
