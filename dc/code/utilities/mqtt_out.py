@@ -11,7 +11,7 @@ Public API: only the function 'publish'
 import paho.mqtt.client as pahomqttclient
 
 # local imports
-from utils.timestamp import get_timestamp
+from utilities.timestamp import get_timestamp
 
 # default settings
 default_broker = "mqtt.docker.local"
