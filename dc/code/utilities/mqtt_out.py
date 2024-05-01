@@ -41,5 +41,9 @@ def publish(msg, topic=default_topic, broker=default_broker, port=default_port):
     if not client._is_connected:
         _connect(broker, port)
 
-    payload = timestamp + " " + str(msg)
+    if type(msg) is dict:                               # preferred
+        payload = str( {'timestamp': timestamp} | msg)
+    else:                                               # failover
+        payload = "timestamp: " + timestamp + " " + str(msg)
+
     client.publish(topic, payload)
