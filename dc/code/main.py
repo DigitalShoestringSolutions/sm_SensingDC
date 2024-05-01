@@ -6,12 +6,11 @@
 # this is the sensor config file, and also the main file of the module!
 
 from time import sleep
-from utils.mqtt_out import publish
+from utilities.mqtt_out import publish
 from hardware.ICs.sht40bmp280 import sample
 
 
 # sensing loop
 while True:
     sleep(1)
-    report = vars(sample())
-    publish(report)
+    publish(sample())

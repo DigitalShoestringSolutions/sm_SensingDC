@@ -15,6 +15,7 @@ def get_TP():
     pressure = round(mybmp280.get_pressure(), 3)
     return temperature, pressure
 
+# Test if run directly. Beware import paths may break. 
 if __name__ == '__main__':
   import time
   while True:

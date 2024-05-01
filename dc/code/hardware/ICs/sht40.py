@@ -52,6 +52,7 @@ def get_TRH():
   RH = round(_calculate_relativehumidity(readings[1]), 3) # %
   return T, RH
 
+# Test if run directly. Beware import paths may break. 
 if __name__ == '__main__':
   import time
   while True:
