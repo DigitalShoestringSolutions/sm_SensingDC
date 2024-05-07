@@ -1,6 +1,6 @@
 # Wrapper for using ens160 sensor over I2C
 
-from DFRobot_ENS160 import DFRobot_ENS160_I2C
+from .DFRobot_ENS160 import DFRobot_ENS160_I2C
 import time
 
 
