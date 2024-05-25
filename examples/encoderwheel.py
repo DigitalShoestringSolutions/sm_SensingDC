@@ -7,7 +7,7 @@ from time import sleep
 
 # local imports
 from utilities.mqtt_out import publish
-from hardware.generic.encoderwheel import EncoderWheel
+from hardware.generic.QuadratureEncoder import EncoderWheel
 
 # setup sensors and models
 # My quadrature encoder is connected to GPIO pins 27 and 22 (BCM numbering), has 1024 pulses per rev and circumference is 0.2 m
