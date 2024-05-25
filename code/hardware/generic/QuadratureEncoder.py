@@ -1,4 +1,4 @@
-# encoderwheel.py
+# QuadratureEncoder.py
 
 # imports
 from gpiozero import RotaryEncoder
