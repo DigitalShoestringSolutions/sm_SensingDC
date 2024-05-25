@@ -16,7 +16,7 @@ Common imports will include:
 
 ## Output interfaces
 
-The messages published to MQTT will be strings. Where `publish()` is supplied with a python dictionary, an ISO8601 timestamp will be added as another entry in the dictionary under key `'timestamp'` and the combined dictionary cast to string. This is the preferred method of operation.  
+The messages published to MQTT will be strings. Where `publish()` is supplied with a python dictionary, an ISO8601 timestamp will be added as another entry in the dictionary under key `'timestamp'` and the combined dictionary cast to a string that uses double quotes for string-literals (i.e. JSON). This is the preferred method of operation.  
 In case a dictionary is not supplied, the message will be cast to string and `timestamp: 2024-05-02T09:35:00.241090+00:00 ` will be inserted at the start of the string.
 
 ## Examples
