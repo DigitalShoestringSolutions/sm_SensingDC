@@ -7,7 +7,13 @@ The broker may be hosted on the same device or remotely.
 ## Structure & Usage.
 
 This structure is designed to be minimal and flexible.  
-The use case must supply a `main.py` into `dc/code`. Although this runs as code, it can be short and serves as the config file. Some deployments can run with as little as 6 simple lines of code here.
+The use case must supply a `main.py` into `dc/code`.  
+<ul>
+  
+  If using the Assembler (i.e. `init_SM.py`), this can be inserted via `UserConfig/sensor_main.py`. In such case a `sensor_requirements.txt` must also be provided alongside - this will be passed by `pip` to install PyPi packages into the docker container. 
+</ul>
+
+Although `main.py` runs as code, it can be short and serves as the config file. Some deployments can run with as little as 6 simple lines of code here - half of which are `import time`, `while True:` and `time.sleep(1)`.
 
 `main.py` is supported by other scripts sorted into `utilities`, `hardware.ICs` and `hardware.generic` (for models etc)
 
