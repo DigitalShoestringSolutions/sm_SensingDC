@@ -25,12 +25,16 @@ FROM python:3.11.2
 
 RUN pip install --upgrade pip
 
+# Install pip dependencies from requirements files. 
 COPY ./requirements.txt /
 RUN pip install -r requirements.txt
-COPY ./user_requirements.txt /
+COPY ./config/requirements.txt /user_requirements.txt
 RUN pip install -r user_requirements.txt
 
+# Add both code/ and config/ to the Docker container. 
+# Files inside believe they are in the same directory and can import each other freely.
 WORKDIR /app
 ADD ./code /app
+ADD ./config /app
 
 CMD ["python3", "/app/main.py"]
