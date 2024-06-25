@@ -15,8 +15,8 @@ class PulseCounter:
         self._old_count = 0
         self._old_time = time.time()
 
-        pulse_button = Button(pin_num, bounce_time=debounce_time)
-        pulse_button.when_pressed = self.on_pulse
+        self.pulse_button = Button(pin_num, bounce_time=debounce_time)
+        self.pulse_button.when_pressed = self.on_pulse
 
     def on_pulse(self):
         # minimal activity here for fast callback
