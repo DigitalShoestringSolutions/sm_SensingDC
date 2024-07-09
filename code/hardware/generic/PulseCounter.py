@@ -22,16 +22,18 @@ class PulseCounter:
         # minimal activity here for fast callback
         self.total_count += 1
 
-    def __call__(self, rounding=3):
-        """Return a dict containing current position and velocity
-        Rounding should be either None or an int of decimal places"""
+    def __call__(self, rounding: int = 3) -> dict:
+        """Return a dict containing the count of recently occurred pulses and their time density.
+        Rounding should be either None or an int of decimal places
+        """
+        count, density = self.recent_pulses_and_density(rounding)
         return {
-            "total_count": self.total_count,
-            "density": self.get_recent_pulse_density(rounding) 
+            "count": count,
+            "density": density
             }
 
-    def get_recent_pulse_density(self, rounding=None):
-        """Returns the number of pulses since this function was last called divided by the time since this function was last called
+    def recent_pulses_and_density(self, rounding: int = None) -> tuple:
+        """Returns the number of pulses since this function was last called, and the same divided by the time since this function was last called.
         Rounding should be either None or an int of decimal places.
         """
 
@@ -49,6 +51,6 @@ class PulseCounter:
         self._old_time = new_time
 
         if rounding is None:
-            return density
+            return delta_count, density
         else:
-            return round(density, rounding)
+            return delta_count, round(density, rounding)
