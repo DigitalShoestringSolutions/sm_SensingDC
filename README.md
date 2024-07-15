@@ -4,13 +4,14 @@ The purpose of this Shoestring Service Module is to collect data from locally at
 Sensors will typically be attached via I2C, SPI, USB or GPIO.  
 The broker may be hosted on the same device or remotely.  
 
-## Structure & Usage.
+## Structure & Usage
 
 This structure is designed to be minimal and flexible.  
-The use case must supply a `main.py` into `dc/code`.  
+The use case must supply a `main.py` into `dc/config`.  
+
 <ul>
   
-  If using the Assembler (i.e. `init_SM.py`), this can be inserted via `UserConfig/sensor_main.py`. In such case a `sensor_requirements.txt` must also be provided alongside - this will be passed by `pip` to install PyPi packages into the docker container. 
+  If using [the Assembler](https://github.com/DigitalShoestringSolutions/ShoestringAssembler), this can be inserted via `UserConfig/Sensing/main.py`. In such case a `UserConfig/Sensing/requirements.txt` must also be provided - this will be passed by `pip` to install PyPi packages into the docker container. Even if none are required, a blank requirements file must still be provided. 
 </ul>
 
 Although `main.py` runs as code, it can be short and serves as the config file. Some deployments can run with as little as 6 simple lines of code here - half of which are `import time`, `while True:` and `time.sleep(1)`.
@@ -27,4 +28,4 @@ In case a dictionary is not supplied, the message will be cast to string and `ti
 
 ## Examples
 
-Some inspiration for what could be written in `code/main.py` are given in the `examples` directory.
+Some inspiration for what could be written in `main.py` are given in the `examples` directory.
