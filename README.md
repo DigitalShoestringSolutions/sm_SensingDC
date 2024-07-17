@@ -7,12 +7,15 @@ The broker may be hosted on the same device or remotely.
 ## Structure & Usage
 
 This structure is designed to be minimal and flexible.  
-The use case must supply a `main.py` into `dc/config`.  
+The use case must supply a `main.py` into `config/`.  
+The use case must also supply a `requirements.txt` into `config/`.  
 
 <ul>
   
-  If using [the Assembler](https://github.com/DigitalShoestringSolutions/ShoestringAssembler), this can be inserted via `UserConfig/Sensing/main.py`. In such case a `UserConfig/Sensing/requirements.txt` must also be provided - this will be passed by `pip` to install PyPi packages into the docker container. Even if none are required, a blank requirements file must still be provided. 
+  If using [the Assembler](https://github.com/DigitalShoestringSolutions/ShoestringAssembler), this can be inserted via `UserConfig/Sensing/main.py` and `UserConfig/Sensing/requirements.txt`. See [the Starter Solution Template](https://github.com/DigitalShoestringSolutions/starter-solution-template/tree/feature/assembler) for more detail. 
 </ul>
+
+`requirements.txt` will be passed to `pip` to install PyPi packages into the sensing docker container. Even if none are required, a blank requirements file must still be provided.
 
 Although `main.py` runs as code, it can be short and serves as the config file. Some deployments can run with as little as 6 simple lines of code here - half of which are `import time`, `while True:` and `time.sleep(1)`.
 
