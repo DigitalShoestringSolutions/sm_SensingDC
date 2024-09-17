@@ -42,6 +42,7 @@ def publish(msg, topic=default_topic, broker=default_broker, port=default_port):
     """
 
     # Get the timestamp first, as soon as possible after sampling
+    logger.debug("requesting timestamp")
     timestamp = get_timestamp()
 
     # Ensure the mqtt client is ready to publish
@@ -65,3 +66,4 @@ def publish(msg, topic=default_topic, broker=default_broker, port=default_port):
     logger.debug("publishing to topic:", topic, "broker:", broker, "port:", port, "the following", type(payload), ":")
     logger.info(payload)
     client.publish(topic, payload)
+    logger.debug("MQTT publication complete")
