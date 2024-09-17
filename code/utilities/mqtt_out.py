@@ -31,9 +31,9 @@ client = pahomqttclient.Client()
 client._is_connected = False    # create custom attribute
 
 def _connect(broker, port):
-    logger.info("MQTT client connecting to broker", broker, "port", port, "...")
+    logger.info("MQTT client attempting to connect to broker", broker, "port", port, "...")
     client.connect(broker, port)
-    client._is_connected = True # should test connection attempt was sucessful
+    client._is_connected = True # should test if connection attempt was sucessful
     logger.info("MQTT client is connected to broker", broker, "port", port)
 
 def publish(msg, topic=default_topic, broker=default_broker, port=default_port):
