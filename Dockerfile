@@ -25,9 +25,14 @@ FROM python:3.11.2
 
 RUN pip install --upgrade pip
 
-# Install pip dependencies from requirements files. 
+# Install standard pip dependencies from requirements file. 
 COPY ./requirements.txt /
 RUN pip install -r requirements.txt
+
+# Manually bust the cache. Nothing below this line will be cached.
+ADD http://date.jsontest.com /etc/builddate
+
+# Install user pip dependencies from requirements file.
 COPY ./config/requirements.txt /user_requirements.txt
 RUN pip install -r user_requirements.txt
 
