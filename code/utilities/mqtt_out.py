@@ -31,10 +31,10 @@ client = pahomqttclient.Client()
 client._is_connected = False    # create custom attribute
 
 def _connect(broker, port):
-    logger.info("MQTT client attempting to connect to broker", broker, "port", port, "...")
+    logger.info("MQTT client attempting to connect to broker " + str(broker) + " port " + str(port) + " ...")
     client.connect(broker, port)
     client._is_connected = True # should test if connection attempt was sucessful
-    logger.info("MQTT client is connected to broker", broker, "port", port)
+    logger.info("MQTT client is connected to broker " + str(broker) + " port " + str(port))
 
 def publish(msg, topic=default_topic, broker=default_broker, port=default_port):
     """Add timestamp to msg (if not provided), connect (if not already) and publish.
@@ -63,7 +63,7 @@ def publish(msg, topic=default_topic, broker=default_broker, port=default_port):
         payload = "timestamp: " + timestamp + " " + str(msg)
 
     # publish to mqtt
-    logger.debug("publishing to topic:", topic, "broker:", broker, "port:", port, "the following", type(payload), ":")
+    logger.debug("publishing to topic: " + str(topic) + " broker: " + str(broker) + " port: " + str(port) + " the following ", str(type(payload)) + ":")
     logger.info(payload)
     client.publish(topic, payload)
     logger.debug("MQTT publication complete")
