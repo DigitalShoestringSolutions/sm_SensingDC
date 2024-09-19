@@ -34,8 +34,9 @@ class PulseCounter:
             "density": density
             }
 
-    def recent_pulses_and_density(self, rounding: int = None) -> tuple:
-        """Returns the number of pulses since this function was last called, and the same divided by the time since this function was last called.
+    def recent_pulses_and_density(self, rounding: int = None, timescale: float = 1) -> tuple:
+        """Returns the number of pulses since this function was last called.
+        Also returns the same divided by the time since this function was last called then multipled by timescale.
         Rounding should be either None or an int of decimal places.
         """
 
@@ -56,6 +57,7 @@ class PulseCounter:
         if self.multiplier != 1:
             delta_count *= self.multiplier
             density *= self.multiplier
+        density *= timescale
 
         # Return values
         if rounding is None:
