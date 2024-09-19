@@ -60,7 +60,7 @@ class PulseCounter:
         # Return values
         if rounding is None:
             return delta_count, density
-        elif self.multiplier = 1:
+        elif self.multiplier == 1:
             return delta_count, round(density, rounding) # preserve delta_count as int
         else:
             return round(delta_count, rounding), round(density, rounding)
