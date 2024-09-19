@@ -9,7 +9,7 @@ from gpiozero import Button
 
 class PulseCounter:
 
-    def __init__(self, pin_num, debounce_time=0.01):
+    def __init__(self, pin_num, debounce_time=0.01, multiplier=1):
 
         self.total_count = 0
         self._old_count = 0
@@ -17,6 +17,8 @@ class PulseCounter:
 
         self.pulse_button = Button(pin_num, bounce_time=debounce_time)
         self.pulse_button.when_pressed = self.on_pulse
+
+        self.multiplier = multiplier
 
     def on_pulse(self):
         # minimal activity here for fast callback
@@ -50,7 +52,15 @@ class PulseCounter:
         self._old_count = new_count
         self._old_time = new_time
 
+        # Scale the output values if multiplier used
+        if self.multiplier != 1:
+            delta_count *= self.multiplier
+            density *= self.multiplier
+
+        # Return values
         if rounding is None:
             return delta_count, density
+        elif self.multiplier = 1:
+            return delta_count, round(density, rounding) # preserve delta_count as int
         else:
-            return delta_count, round(density, rounding)
+            return round(delta_count, rounding), round(density, rounding)
