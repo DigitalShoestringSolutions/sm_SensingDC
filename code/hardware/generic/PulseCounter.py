@@ -9,7 +9,7 @@ from gpiozero import Button
 
 class PulseCounter:
 
-    def __init__(self, pin_num, debounce_time=0.01, multiplier=1):
+    def __init__(self, pin_num: int, debounce_time: float = None, multiplier: float = 1):
 
         self.total_count = 0
         self._old_count = 0
