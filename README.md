@@ -12,7 +12,8 @@ The use case may also supply a `requirements.txt` into `config/`.
 
 <ul>
   
-  If using [the Assembler](https://github.com/DigitalShoestringSolutions/ShoestringAssembler), this can be inserted via `UserConfig/Sensing/main.py` and `UserConfig/Sensing/requirements.txt`. See [the Starter Solution Template](https://github.com/DigitalShoestringSolutions/starter-solution-template/tree/feature/assembler) for more detail. 
+  If using [the Assembler](https://github.com/DigitalShoestringSolutions/ShoestringAssembler), this can be inserted via `UserConfig/Sensing/main.py` and `UserConfig/Sensing/requirements.txt`.  
+  See [the Starter Solution Template](https://github.com/DigitalShoestringSolutions/starter-solution-template/tree/template/assembler) for more detail. 
 </ul>
 
 `requirements.txt` will be passed to `pip` to install PyPi packages into the sensing docker container. If none are required, the requirements file can be omitted.  
