@@ -7,48 +7,56 @@ Working assumptions:
 Public API: only the function 'publish'
 
 """
-# standard imports
+
+## -- Imports ---------------------------------------------------------------------
+
+# Standard imports
 import json
 import logging
 
-# installed imports
-import paho.mqtt.client as pahomqttclient
+# Installed imports
+import paho.mqtt.publish as pahopublish
 
-# local imports
+# Local imports
 from utilities.timestamp import get_timestamp
 
-# default settings
+## --------------------------------------------------------------------------------
+
+
+
+
+## -- Settings  -------------------------------------------------------------------
+
 default_broker = "mqtt.docker.local"
 default_topic = "shoestring-sensor"
 default_port = 1883
 #default_qos = 0                # qos not in use
 
+## --------------------------------------------------------------------------------
 
-# startup
+
+
+
+## -- Startup  --------------------------------------------------------------------
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-client = pahomqttclient.Client()
-client._is_connected = False    # create custom attribute
 
-def _connect(broker, port):
-    logger.info("MQTT client attempting to connect to broker " + str(broker) + " port " + str(port) + " ...")
-    client.connect(broker, port)
-    client._is_connected = True # should test if connection attempt was sucessful
-    logger.info("MQTT client is connected to broker " + str(broker) + " port " + str(port))
+## --------------------------------------------------------------------------------
+
+
+
+
+## -- Functions  ------------------------------------------------------------------
 
 def publish(msg, topic=default_topic, broker=default_broker, port=default_port):
-    """Add timestamp to msg (if not provided), connect (if not already) and publish.
+    """Add timestamp to msg (if not provided) and publish.
     Arg reordering is deliberate to allow kwargs.
     """
 
     # Get the timestamp first, as soon as possible after sampling
     logger.debug("requesting timestamp")
     timestamp = get_timestamp()
-
-    # Ensure the mqtt client is ready to publish
-    if not client._is_connected:
-        logger.info("Attempting to publish MQTT message without connection to broker - connecting now")
-        _connect(broker, port)
 
     # format the message
     if type(msg) is dict:                               # preferred
@@ -65,5 +73,7 @@ def publish(msg, topic=default_topic, broker=default_broker, port=default_port):
     # publish to mqtt
     logger.debug("publishing to topic: " + str(topic) + " broker: " + str(broker) + " port: " + str(port) + " the following ", str(type(payload)) + ":")
     logger.info(payload)
-    client.publish(topic, payload)
+    pahopublish.single(topic, payload, hostname=broker, port=port) # connect, publish and disconnect in a simplified helper function
     logger.debug("MQTT publication complete")
+
+## --------------------------------------------------------------------------------
