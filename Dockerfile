@@ -22,9 +22,9 @@
 
 # The python:3.11.2 base image is usually preferred, but (rpi-)lgpio can't be installed from it.
 # From this ubuntu base image, (rpi-)lgpio can.
-FROM ubuntu:23.04
-RUN apt update
-RUN apt install -y python3-pip # ubuntu base image lacks pip
+FROM ubuntu:24.04
+RUN apt-get update
+RUN apt-get install -y python3-pip # ubuntu base image lacks pip
 
 # Install standard pip dependencies from requirements file. 
 COPY ./requirements.txt /
