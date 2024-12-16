@@ -22,7 +22,7 @@
 
 # The python:3.11.2 base image is usually preferred, but (rpi-)lgpio can't be installed from it.
 # From this ubuntu base image, (rpi-)lgpio can.
-FROM ubuntu:24.04
+FROM ubuntu:24.04      # Long Term Support (LTS) version
 RUN apt-get update
 RUN apt-get install -y python3-pip # ubuntu base image lacks pip
 
@@ -32,9 +32,6 @@ COPY ./requirements.txt /
 # It doesn't actually install globally (check your pip list after running this) but this option does avert the PEP668 error.
 RUN pip install -r requirements.txt --break-system-packages
 
-# Manually bust the cache. Nothing below this line will be cached.
-ADD http://date.jsontest.com /etc/builddate
-
 # Install user pip dependencies from requirements file.
 COPY ./config/requirements.txt /user_requirements.txt
 RUN pip install -r user_requirements.txt --break-system-packages
@@ -42,7 +39,6 @@ RUN pip install -r user_requirements.txt --break-system-packages
 # Add both code/ and config/ to the Docker container. 
 # Files inside believe they are in the same directory and can import each other freely.
 WORKDIR /app
-# ADDing ./code could be above the cache bust - but marginal optimisation not worth the times I have to prune everything when I want to rebuild ./code.
 ADD ./code /app
 ADD ./config /app
 
