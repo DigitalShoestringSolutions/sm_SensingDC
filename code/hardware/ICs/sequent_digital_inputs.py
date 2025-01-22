@@ -21,10 +21,10 @@ import smbus2
 ## --------------------------------------------------------------------------------
 
 
-class Sequent16inputsHAT:
+class Sequent16DigitalInputs:
 
     # I2C register to read from to get the status of the inputs
-    _INPUTS_STATUS_REGISTER_ADDRESS = 0x00
+    _DIGITAL_INPUTS_STATUS_REGISTER_ADDRESS = 0x00
 
     # For each channel, which bit in the read word represents its state?
     # It is a trivial sequential mapping for the 16 input card, but this explicit format makes supporting the 8 input easy.
@@ -49,7 +49,7 @@ class Sequent16inputsHAT:
 
 
     def __init__(self, stack: int = 0, bus: int = 1):
-        """Class for reading data from the Sequent Microsystems 8 and 16 input HATs.
+        """Class for reading data from the Sequent Microsystems 8 and 16 digital input HATs.
 
         https://sequentmicrosystems.com/products/16-universal-inputs-card-for-raspberry-pi.
         https://sequentmicrosystems.com/products/eight-hv-digital-inputs-for-raspberry-pi
@@ -154,13 +154,13 @@ class Sequent16inputsHAT:
 
         # Use a context manager to handle errors on the bus
         with smbus2.SMBus(self._bus) as i2cbus:
-            status_reg = i2cbus.read_word_data(self._hw_addr, self._INPUTS_STATUS_REGISTER_ADDRESS)
+            status_reg = i2cbus.read_word_data(self._hw_addr, self._DIGITAL_INPUTS_STATUS_REGISTER_ADDRESS)
 
         # Return a 16 bit integer.
         return status_reg
 
 
-class Sequent8inputsHAT(Sequent16inputsHAT):
+class Sequent8DigitalInputs(Sequent16DigitalInputs):
     _channel_map = {
         1: 0x0800,
         2: 0x0400,
@@ -178,14 +178,14 @@ class Sequent8inputsHAT(Sequent16inputsHAT):
 # Test this script if it is run directly
 
 if __name__ == '__main__':
-    print("testing sequent_16inputs.py")
+    print("testing sequent_digital_inputs.py")
     from time import sleep
 
     # HATs to test
     myhats = [
-        Sequent16inputsHAT(0),
-    #    Sequent8inputsHAT(1),
-    #    Sequent16inputsHAT(2),
+        Sequent16DigitalInputs(0),
+    #    Sequent8DigitalInputs(1),
+    #    Sequent16DigitalInputs(2),
     ]
 
     for myhat in myhats:
