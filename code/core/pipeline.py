@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 class Pipeline:
     def __init__(self,spec):
-        self.spec = reversed(spec)
+        self.spec = spec
         self.contents = []
 
     def initialise(self,calculation_modules):
