@@ -26,18 +26,6 @@ class OneWire:
         if not os.path.exists(self.sensor_filepath):
             logger.error(f"One wire device not found at {self.sensor_filepath}")
 
-    def read_register(self,register,num_bytes,stop=False):     # Write address, register_no  -- Read address, data
-        write_reg_addr = Msg.write(self.addr,[register])
-        read_reg_data = Msg.read(self.addr,num_bytes)
-
-        if stop:
-            self.i2c.i2c_rdwr(write_reg_addr)
-            self.i2c.i2c_rdwr(read_reg_data)
-        else:
-            self.i2c.i2c_rdwr(write_reg_addr, read_reg_data)
-
-        return list(read_reg_data)
-
-    def write_register(self,register,data):    #Write address, register, data...
-        write_reg_addr_data = Msg.write(self.addr,[register,*data])
-        self.i2c.i2c_rdwr(write_reg_addr_data)
+    def read(self):
+        #TODO
+        pass

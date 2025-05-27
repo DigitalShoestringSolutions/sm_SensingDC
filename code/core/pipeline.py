@@ -18,7 +18,7 @@ class Pipeline:
         for index,calc_module in enumerate(self.contents):
             try:
                 output = calc_module.calculate(variables_dict)
-                variables_dict = output
+                variables_dict = {**variables_dict,**output}
             except Exception as e:
                 logger.error(f"Error during calculation: {traceback.format_exc()}")
                 raise core.exceptions.CalculationError(str(e),self.spec[index])
