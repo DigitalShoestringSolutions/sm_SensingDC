@@ -40,13 +40,13 @@ class ENS160:
         """Sample air quality readings from ENS160 sensor.
 
         Ignore warmup phase etc.
-        
+
         :return dict Dictionary of eCO2 (ppm), TVOC (ppb) and AQI against variables set in config
         """
 
         try:
             # resend power mode every sample in case of sensor reset
-            self.adc.set_PWR_mode(self.sensor.ENS160_STANDARD_MODE)
+            self.set_PWR_mode(self.STANDARD_MODE)
 
             # Read raw data from sensor
             raw_data = self.i2c.read_register(self.i2c_address, 0x21, 5)
@@ -59,7 +59,7 @@ class ENS160:
             return {
                 self.AQI_input_variable: AQI,
                 self.TVOC_input_variable: TVOC,
-                self.eCO2_input_variable: eCO2,               
+                self.eCO2_input_variable: eCO2,
                 }
 
         except Exception as e:
