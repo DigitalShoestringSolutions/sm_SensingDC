@@ -57,9 +57,9 @@ class ENS160:
             eCO2 = raw_data[4] << 8 | raw_data[3] # CO2 equivalent concentration in ppm calculated according to the detected data of VOCs and hydrogen.
 
             return {
-                self.AQI_input_variable: AQI,
-                self.TVOC_input_variable: TVOC,
-                self.eCO2_input_variable: eCO2,
+                self.AQI_variable: AQI,
+                self.TVOC_variable: TVOC,
+                self.eCO2_variable: eCO2,
                 }
 
         except Exception as e:
