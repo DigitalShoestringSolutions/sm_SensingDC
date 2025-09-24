@@ -7,14 +7,23 @@ logger = logging.getLogger(__name__)
 class MLX90614:
 
     def __init__(self, config, variables):
-        self.i2c_address = config.get('i2c_address',0x5a)
+        # Load config
+        if config is None: # Also accept None being passed to this function
+            config = {}    # In this case, use a blank dict to avoid "NoneType has no attribute 'get()'" below
+        self.i2c_address = config.get('i2c_address', 0x5a)
+
+        # Load variables
+        if variables is None:
+            variables = {}
+        self.input_variable = variables.get('object_temperature', "temperature") # Physical input to the sensing hardware that this is modeling
+
         self.i2c = None # Interface created in initialise()
 
-        self.input_variable = variables.get('object_temperature', "temperature") # Physical input to the sensing hardware that this is modeling
 
     def initialise(self, interface):
         self.i2c = interface
         # "The maximum frequency of the MLX90614 SMBus is 100 kHz" datasheet page 21. Does the shoestring i2c interface module support configuring the speed?
+
 
     def sample(self) -> dict:
         try:

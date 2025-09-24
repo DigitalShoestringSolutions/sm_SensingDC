@@ -13,16 +13,21 @@ class MAX31865:
 
 
     def __init__(self, config, variables):
-        
-        self.spi = None                                      # Interface created in initialise()
-        self.spi_mode = 0b11                                 # MAX31865 only works with SPI clock polarity=1 and clock phase=1. Force during transfers.
-
+        # Load config
+        if config is None:                                   # Also accept None being passed to this function
+            config = {}                                      # In this case, use a blank dict to avoid "NoneType has no attribute 'get()'" below
         self.R_Ref = config.get("R_Ref", 430)	             # ADC full scale. Ideally around 4*R_0dC. Product we recommend is specified to have a 430Ω 0.1% resistor.
         self.filter = config.get("filter_frequency", "50Hz") # What digital filter to apply to the data. 50Hz or 60Hz acceptable.
         self.continous = config.get("continuous", 1)         # Whether to sample continuously (1) (recommended), or wait until externally requested before taking a reading (0).
         assert self.continous in [0, 1]
-               
-        self.input_variable = variables['PT_RTD_resistance'] # Physical input to the sensing hardware that this is modeling
+
+        # Load variables
+        if variables is None:
+            variables = {}
+        self.input_variable = variables.get('PT_RTD_resistance', 'resistance') # Physical input to the sensing hardware that this is modeling
+
+        self.spi = None                                      # Interface created in initialise()
+        self.spi_mode = 0b11                                 # MAX31865 only works with SPI clock polarity=1 and clock phase=1. Force during transfers.
 
 
     def initialise(self, interface):
