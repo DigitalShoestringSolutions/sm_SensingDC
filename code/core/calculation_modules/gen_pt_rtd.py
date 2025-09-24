@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 class PT_RTD:
-    def __init__(self, config, variables):
+    def __init__(self, config:dict={}, variables:dict={}):
         """
         Convert RTD resistance to Temperature, using 5th order polynomial fit of Temperature as a function of Resistance.
         This fit provides much improved accuracy through the temperature range of [-200C, 660C], particularly near the high
@@ -19,9 +19,14 @@ class PT_RTD:
 
         :return: temperature, in celcius
         """
-
+        # Load config
+        if config is None: # Also accept None being passed to this function
+            config = {}    # In this case, use a blank dict to avoid "NoneType has no attribute 'get()'" below
         self.nominal_resistance = config.get('nominal_resistance', 100)  # e.g. 100 = 100 ohm.
 
+        # Load variables
+        if variables is None:
+            variables = {}
         self.input_variable = variables.get('temperature', 'temperature') # input to physical hardware that this is modeling
         self.output_variable = variables.get('resistance', 'resistance')  # Output of physical hardware that this is modeling
 
