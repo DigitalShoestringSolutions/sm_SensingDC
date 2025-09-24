@@ -12,13 +12,20 @@ class ENS160:
     STANDARD_MODE = 0x02 ## Gas Sensing Mode.
 
 
-    def __init__(self, config, variables):
+    def __init__(self, config: dict={}, variables: dict={}):
+        # Load config
+        if config is None: # Also accept None being passed to this function
+            config = {}    # In this case, use a blank dict to avoid "NoneType has no attribute 'get()'" below
         self.i2c_address = config.get('i2c_address', 0x53)
-        self.i2c = None # Interface created in initialise()
 
+        # Load variables
+        if variables is None:
+            variables = {}
         self.eCO2_variable = variables.get('eCO2_var', 'eCO2') # In case the user wants to rename these variables in the blackboard / sensing stack / pipeline
         self.TVOC_variable = variables.get('TVOC_var', 'TVOC')
         self.AQI_variable = variables.get('AQI_var', 'AQI')
+
+        self.i2c = None # Interface created in initialise()
 
 
     def initialise(self, interface):
