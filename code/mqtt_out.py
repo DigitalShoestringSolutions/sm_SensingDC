@@ -29,9 +29,10 @@ class MQTTServiceWrapper(multiprocessing.Process):
 
         self.topic_base = mqtt_conf.get('topic_prefix',"")
 
-        self.initial = mqtt_conf['reconnect'].get('initial',5)
-        self.backoff = mqtt_conf['reconnect'].get('backoff',2)
-        self.limit = mqtt_conf['reconnect'].get('limit',60)
+        mqtt_conf_reconnect = mqtt_conf.get('reconnect', {})
+        self.initial = mqtt_conf_reconnect.get('initial', 5)
+        self.backoff = mqtt_conf_reconnect.get('backoff', 2)
+        self.limit = mqtt_conf_reconnect.get('limit', 60)
 
         # declarations
         self.zmq_conf = zmq_conf
@@ -99,3 +100,4 @@ class MQTTServiceWrapper(multiprocessing.Process):
                     pass
             client.loop(0.05)
         logger.info("Done")
+
