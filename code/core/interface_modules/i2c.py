@@ -20,13 +20,13 @@ class I2C:
     def read_register(self,address,register,num_bytes,stop=False, delay:float=None):     # Write address, register_no  -- Read address, data
         """Read a number of registers from attached I2C device.
 
-        :param int address:   I2C slave device address
-        :param int register:  Memory register to read first data byte from
-        :param int num_bytes: Number of sequential bytes to read
-        :paran bool stop:     (optional) If false, complete the reg write and data read in a single transaction 
+        :param int address:   I2C slave device address.
+        :param int register:  Memory register to read first data byte from.
+        :param int num_bytes: Number of sequential bytes to read.
+        :paran bool stop:     (optional) If false, complete the reg write and data read in a single transaction.
         :param float delay:   (optional) Seconds to sleep for between writing register and reading back data. Requires `stop=True` to be effective.
         """
-        
+
         write_reg_addr = Msg.write(address,[register])
         read_reg_data = Msg.read(address,num_bytes)
 
@@ -42,5 +42,4 @@ class I2C:
 
     def write_register(self,address,register,data):    #Write address, register, data...
         write_reg_addr_data = Msg.write(address,[register,*data])
-
         self.i2c.i2c_rdwr(write_reg_addr_data)
