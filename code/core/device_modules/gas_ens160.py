@@ -14,17 +14,14 @@ class ENS160:
 
     def __init__(self, config: dict={}, variables: dict={}):
         # Load config
-        if config is None: # Also accept None being passed to this function
-            config = {}    # In this case, use a blank dict to avoid "NoneType has no attribute 'get()'" below
         self.i2c_address = config.get('i2c_address', 0x53)
 
         # Load variables
-        if variables is None:
-            variables = {}
         self.eCO2_variable = variables.get('eCO2_var', 'eCO2') # In case the user wants to rename these variables in the blackboard / sensing stack / pipeline
         self.TVOC_variable = variables.get('TVOC_var', 'TVOC')
         self.AQI_variable = variables.get('AQI_var', 'AQI')
 
+        # Interface placeholder
         self.i2c = None # Interface created in initialise()
 
 
@@ -59,7 +56,7 @@ class ENS160:
             raw_data = self.i2c.read_register(self.i2c_address, 0x21, 5)
 
             # Process readings
-            AQI = raw_data[0] # The air quality index calculated on the basis of UBA. 1-5 (Corresponding to five levels of Excellent, Good, Moderate, Poor and Unhealthy respectively)
+            AQI = raw_data[0]                     # The air quality index calculated on the basis of UBA. 1-5 (Corresponding to five levels of Excellent, Good, Moderate, Poor and Unhealthy respectively)
             TVOC = raw_data[2] << 8 | raw_data[1] # Total Volatile Organic Comounds concentration in ppb.
             eCO2 = raw_data[4] << 8 | raw_data[3] # CO2 equivalent concentration in ppm calculated according to the detected data of VOCs and hydrogen.
 
