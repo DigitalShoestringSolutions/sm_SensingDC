@@ -138,7 +138,7 @@ class BuildingBlockFramework(multiprocessing.Process):
                 prefix,
                 spec['module'],
                 spec['class'],
-                {arg: spec.get(arg) for arg in args}
+                {arg: spec.get(arg,{}) for arg in args}
             )
         logger.debug(f"Loaded list: {output_dict}")
 
@@ -234,3 +234,4 @@ class BuildingBlockFramework(multiprocessing.Process):
             logger.critical("Too many failed attempts - hard resetting")
 
             sys.exit(255)
+
