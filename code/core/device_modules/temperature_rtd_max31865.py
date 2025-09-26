@@ -43,7 +43,7 @@ class MAX31865:
                 self.oneshot()
                 time.sleep(0.1) # after activating oneshot measurement, conversion takes about 60ms until DATA_READY falls low (=ready). 100ms is safe margin.
 
-            reading_bytes = self._read_regs(self.REG_RTD_READING, 2)
+            reading_bytes = self.spi.read(self.REG_RTD_READING, 2, mode=self.spi_mode) # Read 2 bytes from 0x01.
             adc_code = ((reading_bytes[0] << 8 | reading_bytes[1]) >> 1) # 15 bit data, discard fault bit
             resistance = self.R_Ref * adc_code / 32768 # Notably not 32767, see datasheet.
 
@@ -53,23 +53,6 @@ class MAX31865:
             logger.error(traceback.format_exc())
             raise e
 
-
-    def _read_regs(self, first_reg_addr,  nregs=8):
-        """Read nregs consecutive registers, starting from first_reg_addr
-
-        Registers of the MAX31865:
-        00h = Config
-        01h = RTD MSBs
-        02h = RTD LSBs
-        03h = High Fault Threshold MSB
-        04h = High Fault Threshold LSB
-        05h = Low Fault Threshold MSB
-        06h = Low Fault Threshold LSB
-        07h = Fault Status
-        """
-
-        resp = self.spi.transfer([first_reg_addr] + [0]*nregs, mode=self.spi_mode)[1:] # Ignore first byte as it was while the command was being clocked in. Force mode 3.
-        return resp
 
     def set_config_reg(self,
                    VBias=0,
@@ -101,11 +84,11 @@ class MAX31865:
                            filter50Hz
                            )
         
-        self.spi.transfer([self.REG_CONFIG_WRITE, new_config_byte], mode=self.spi_mode) # force mode 3
+        self.spi.write(self.REG_CONFIG_WRITE, new_config_byte, mode=self.spi_mode)
 
 
     def oneshot(self):
         """Request a single reading without otherwise changing the config."""
-        current_config = self._read_regs(self.REG_CONFIG_READ, 1)[0]
+        current_config = self.spi.read(self.REG_CONFIG_READ, 1, self.spi_mode)[0]
         new_config = (current_config  | 0b00100000)
-        self.transfer([self.REG_CONFIG_WRITE, new_config], mode=self.spi_mode) # force mode 3
+        self.spi.write(self.REG_CONFIG_WRITE, new_config, mode=self.spi_mode)
