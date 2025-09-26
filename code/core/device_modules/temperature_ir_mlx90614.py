@@ -6,17 +6,14 @@ logger = logging.getLogger(__name__)
 
 class MLX90614:
 
-    def __init__(self, config, variables):
+    def __init__(self, config:dict={}, variables:dict={}):
         # Load config
-        if config is None: # Also accept None being passed to this function
-            config = {}    # In this case, use a blank dict to avoid "NoneType has no attribute 'get()'" below
         self.i2c_address = config.get('i2c_address', 0x5a)
 
         # Load variables
-        if variables is None:
-            variables = {}
         self.input_variable = variables.get('object_temperature', "temperature") # Physical input to the sensing hardware that this is modeling
 
+        # Interface placeholder
         self.i2c = None # Interface created in initialise()
 
 

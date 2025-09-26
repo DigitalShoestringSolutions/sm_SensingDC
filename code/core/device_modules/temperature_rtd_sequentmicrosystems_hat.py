@@ -7,18 +7,15 @@ logger = logging.getLogger(__name__)
 
 class Sequent_8ch_RTD_HAT:
 
-    def __init__(self, config, variables):
+    def __init__(self, config:dict={}, variables:dict={}):
         # Load config
-        if config is None:                                  # Also accept None being passed to this function
-            config = {}                                     # In this case, use a blank dict to avoid "NoneType has no attribute 'get()'" below
         self.channel = config.get('channel')                # No default value here, must be configured
         self.i2c_address = config.get('i2c_address',0x40)   # Use stack number? In the case of this HAT, that is as simple as just 0x40 + stack
 
         # Load variables
-        if variables is None:
-            variables = {}
         self.input_variable = variables.get('PT_RTD_resistance', 'resistance') # Physical input to the sensing hardware that this is modeling
 
+        # Interface placeholder and interface settings
         self.i2c = None                                     # Interface created in initialise()
         self.channel_mask = 8                               # maximum valid channel number
 

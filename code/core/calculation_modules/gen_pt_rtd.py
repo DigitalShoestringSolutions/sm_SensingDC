@@ -20,13 +20,9 @@ class PT_RTD:
         :return: temperature, in celcius
         """
         # Load config
-        if config is None: # Also accept None being passed to this function
-            config = {}    # In this case, use a blank dict to avoid "NoneType has no attribute 'get()'" below
         self.nominal_resistance = config.get('nominal_resistance', 100)  # e.g. 100 = 100 ohm.
 
         # Load variables
-        if variables is None:
-            variables = {}
         self.input_variable = variables.get('temperature', 'temperature') # input to physical hardware that this is modeling
         self.output_variable = variables.get('resistance', 'resistance')  # Output of physical hardware that this is modeling
 
