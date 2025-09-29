@@ -89,6 +89,6 @@ class MAX31865:
 
     def oneshot(self):
         """Request a single reading without otherwise changing the config."""
-        current_config = self.spi.read(self.REG_CONFIG_READ, 1, self.spi_mode)[0]
+        current_config = self.spi.read(self.REG_CONFIG_READ, 1, mode=self.spi_mode)[0]
         new_config = (current_config  | 0b00100000)
         self.spi.write(self.REG_CONFIG_WRITE, new_config, mode=self.spi_mode)
