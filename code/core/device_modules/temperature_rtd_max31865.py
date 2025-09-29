@@ -13,6 +13,11 @@ class MAX31865:
 
 
     def __init__(self, config:dict={}, variables:dict={}):
+        """Device module for using the MAX31865 RTD amplifier to measure resistance of an attached PT-RTD.
+        
+        :param dict config:    (otpional) Configure the device. `R_Ref`, `filter_frequency` and `continuous` can be provided as keys.
+        :param dict variables: (optional) Set the variable names to push to the blackboard.  Currently the only key searched for is `PT_RTD_resistance`, default value is `resistance`.
+        """
         # Load config
         self.R_Ref = config.get("R_Ref", 430)	             # ADC full scale. Ideally around 4*R_0dC. Product we recommend is specified to have a 430Ω 0.1% resistor.
         self.filter = config.get("filter_frequency", "50Hz") # What digital filter to apply to the data. 50Hz or 60Hz acceptable.
@@ -28,6 +33,7 @@ class MAX31865:
 
 
     def initialise(self, interface):
+        """Associate the interface with the sensor. Expects an SPI instance the supports `read()` and `write()`."""
         self.spi = interface
 
         self.set_config_reg(
@@ -38,6 +44,10 @@ class MAX31865:
 
 
     def sample(self) -> dict:
+        """Sample the resistance of the attached RTD. 
+        
+        :return dict A dictionary containing the resistance of the RTD in Ohms. The key can be changed with the config dict when constructing this class.
+        """
         try:
             if not self.continous:
                 self.oneshot()

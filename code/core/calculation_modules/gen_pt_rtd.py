@@ -28,6 +28,14 @@ class PT_RTD:
 
 
     def calculate(self, var_dict):
+        """Calculate the temperature of an RTD from its resistance.
+        
+        Receives the variable blackboard as a dictionary, reads the resistance variable (name selectable in config), 
+        performs the calculation and updates the blackboard's variable for the RTD temperature (name also selectable in config).
+        
+        :param dict var_dict: The original variable blackboard
+        :return dict The updated variable blackboard.
+        """
         try:
             # Get RTD resistance from blackboard
             res = var_dict[self.output_variable]

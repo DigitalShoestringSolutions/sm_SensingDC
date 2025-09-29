@@ -8,6 +8,13 @@ logger = logging.getLogger(__name__)
 class Sequent_8ch_RTD_HAT:
 
     def __init__(self, config:dict={}, variables:dict={}):
+        """Device module for using the Sequent Microsystems RTD DAQ HAT to measure resistance of an attached PT-RTD.
+
+        This hardware supports only PT-RTDs with a nominal resistance of 100 Ohms. Multiple RTDs can be connected to this HAT at once and selected with `channel`.
+
+        :param dict config:    (otpional) Configure the device. Currrently the keys searched for are `channel` (1-8) and `i2c_address` (defaults to 0x40, increases with stack number).
+        :param dict variables: (optional) Set the variable names to push to the blackboard.  Currently the only key searched for is `PT_RTD_resistance`, default value is `resistance`.
+        """
         # Load config
         self.channel = config.get('channel')                 # No default value here, must be configured
         self.i2c_address = config.get('i2c_address', 0x40)   # Use stack number? In the case of this HAT, that is as simple as just 0x40 + stack
@@ -16,14 +23,21 @@ class Sequent_8ch_RTD_HAT:
         self.input_variable = variables.get('PT_RTD_resistance', 'resistance') # Physical input to the sensing hardware that this is modeling
 
         # Interface placeholder
-        self.i2c = None                                     # Interface created in initialise()
+        self.i2c = None                                      # Interface created in initialise()
 
 
     def initialise(self, interface):
+        """Associate the interface with the sensor. Expects an I2C instance the supports `read_register()`"""
         self.i2c = interface
 
 
     def sample(self) -> dict:
+        """Sample the resistance of the attached RTD. 
+
+        Channel cannot be selected here, that must be done with `config` when constructing the class.
+
+        :return dict A dictionary containing the resistance of the RTD in Ohms. The key can be changed with the config dict when constructing this class.
+        """
         try:
             # Check channel number is valid. Must be an int between 1 and self.channel_mask inclusive.
             if not isinstance(self.channel, int):
