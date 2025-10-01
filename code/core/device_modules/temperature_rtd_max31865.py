@@ -29,7 +29,8 @@ class MAX31865:
 
         # Interface placeholder and interface settings
         self.spi = None                                      # Interface created in initialise()
-        self.spi_mode = 0b11                                 # MAX31865 only works with SPI clock polarity=1 and clock phase=1. Force during transfers.
+        self.spi_mode = 0b11                                 # MAX31865 only works with SPI clock phase=1. Force SPI mode during transfers.
+        # Datasheet: "The MAX31865 supports SPI modes 1 and 3 ... The MAX31865 automatically accommodates either clock polarity by sampling SCLK when CS becomes active to determine the polarity of the inactive clock".
 
 
     def initialise(self, interface):
