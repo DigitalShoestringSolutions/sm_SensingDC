@@ -28,6 +28,19 @@ class MLX90614:
         # "The maximum frequency of the MLX90614 SMBus is 100 kHz" datasheet page 21. Does the shoestring i2c interface module support configuring the speed?
 
 
+    def read_temperature(self) -> float:
+        """Read the IR temperature from the sensor in Kelvin."""
+        # perform reading
+        raw_temp_reading = self.i2c.read_register(self.i2c_address, 0x07, 2, stop=False) # read 2 bytes starting at 0x07 (object temperature zone 1)
+
+        # unpack bytes into single temperature float
+        raw_temp_int = raw_temp_reading[1] << 8 | raw_temp_reading[0] # raw_temp_int = kelvin*50
+        temperature  = raw_temp_int * 0.02        
+        temperature = round(temperature, 2) # temperature will always be a multiple of 0.02. Don't let any floating point issues change this.
+
+        return temperature
+
+
     def sample(self) -> dict:
         """"Read the IR temperature from the sensor.
 
@@ -36,14 +49,8 @@ class MLX90614:
         :return dict A dictionary containing the sampled temperature in C. The key can be changed with the config dict when constructing this class.
         """
         try:
-            # perform reading
-            raw_temp_reading = self.i2c.read_register(self.i2c_address, 0x07, 2, stop=False) # read 2 bytes starting at 0x07 (object temperature zone 1)
-
-            # unpack bytes into single temperature float
-            raw_temp_int = raw_temp_reading[1] << 8 | raw_temp_reading[0]
-            temperature  = (raw_temp_int * 0.02) - 273.15 # report in degrees C
-
-            return {self.input_variable: round(temperature, 2)} # temperature will always be a multiple of 0.01. Don't let any floating point issues change this.
+            temperature = self.read_temperature() - 273.15 # report in degrees C
+            return {self.input_variable: temperature}
 
         except Exception as e:
             logger.error(traceback.format_exc())

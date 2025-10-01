@@ -43,20 +43,25 @@ class MAX31865:
             )
 
 
+    def read_resistance(self) -> float:
+        """Sample the resistance of the attached RTD."""
+        if not self.continous:
+            self.oneshot()
+            time.sleep(0.1) # after activating oneshot measurement, conversion takes about 60ms until DATA_READY falls low (=ready). 100ms is safe margin.
+
+        reading_bytes = self.spi.read(self.REG_RTD_READING, 2, mode=self.spi_mode) # Read 2 bytes from 0x01.
+        adc_code = ((reading_bytes[0] << 8 | reading_bytes[1]) >> 1) # 15 bit data, discard fault bit
+        resistance = self.R_Ref * adc_code / 32768 # Notably not 32767, see datasheet.
+        return resistance
+
+
     def sample(self) -> dict:
         """Sample the resistance of the attached RTD. 
         
         :return dict A dictionary containing the resistance of the RTD in Ohms. The key can be changed with the config dict when constructing this class.
         """
         try:
-            if not self.continous:
-                self.oneshot()
-                time.sleep(0.1) # after activating oneshot measurement, conversion takes about 60ms until DATA_READY falls low (=ready). 100ms is safe margin.
-
-            reading_bytes = self.spi.read(self.REG_RTD_READING, 2, mode=self.spi_mode) # Read 2 bytes from 0x01.
-            adc_code = ((reading_bytes[0] << 8 | reading_bytes[1]) >> 1) # 15 bit data, discard fault bit
-            resistance = self.R_Ref * adc_code / 32768 # Notably not 32767, see datasheet.
-
+            resistance = self.read_resistance()
             return {self.input_variable: resistance}
     
         except Exception as e:
