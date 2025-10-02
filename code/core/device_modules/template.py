@@ -9,7 +9,8 @@ logger = logging.getLogger(__name__)
 class DeviceClassName:
     ADCMax = pow(2, 12)
 
-    def __init__(self, config, variables):
+    def __init__(self, config:dict={}, variables:dict={}):
+        # Load config
         # TODO: extract config variables
         # for example
         self.variable_name = config.get("name_of_config_var_in_config","default_value")
@@ -19,9 +20,10 @@ class DeviceClassName:
         # for example
         self.i2c = None
         
+        # Load variables
         # TODO: get blackboard variable names
         # for example
-        self.adc_voltage = variables["v_adc"]
+        self.adc_voltage = variables.get("v_adc", "default_variable_name")
 
     def initialise(self, interface):
         # TODO: save interface

@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class SingleSample:
+    """The simplest sampling approach. Sample a single sensing stack once and report the value."""
     def __init__(self, config):
         self.period = config["period"]
         self.sensing_stack = None
@@ -42,6 +43,7 @@ class SingleSample:
 
 
 class SingleSampleAvg:
+    """Sample a sensing stack multiple times and report the average value"""
     def __init__(self, config):
         self.full_period = config["period"]
         self.n_samples = config["n_samples"]
@@ -122,6 +124,7 @@ class SingleSampleAvg:
 
 
 class MultiSampleMerged:
+    """Sample once from multiple sensing stacks and merge the dictionaries."""
     def __init__(self, config):
         self.period = config["period"]
         self.sensing_stacks = None
@@ -154,6 +157,7 @@ class MultiSampleMerged:
         return self.delay
 
 class MultiSampleMergedAvg:
+    """Sample multiple times from multiple sensing stacks."""
     def __init__(self, config):
         self.full_period = config["period"]
         self.n_samples = config["n_samples"]
@@ -235,6 +239,7 @@ class MultiSampleMergedAvg:
 
 
 class MultiSampleIndividual:
+    """Samples each sensing stack and reports the result of each individually"""
     def __init__(self, config):
         self.period = config["period"]
         self.sensing_stacks = None
@@ -272,6 +277,7 @@ class MultiSampleIndividual:
 
 
 class MultiSampleIndividualAvg:
+    """I'm confused"""
     def __init__(self, config):
         self.full_period = config["period"]
         self.n_samples = config["n_samples"]
@@ -357,3 +363,4 @@ class MultiSampleIndividualAvg:
                 out[k] = mode
 
         return out
+
