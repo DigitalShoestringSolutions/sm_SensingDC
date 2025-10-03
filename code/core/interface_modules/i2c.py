@@ -27,7 +27,16 @@ class I2C:
         :param float delay:   (optional) Seconds to sleep for between writing register and reading back data. Requires `stop=True` to be effective.
         """
 
-        write_reg_addr = Msg.write(address,[register])
+        # Express register as a list of ints < 255
+        if register == 0:
+            write_data = [register]
+        else:
+            write_data = []
+            while register > 0:
+                write_data.insert(0, register & 0xFF)
+                register = register >> 8
+
+        write_reg_addr = Msg.write(address, write_data)
         read_reg_data = Msg.read(address,num_bytes)
 
         if stop:
