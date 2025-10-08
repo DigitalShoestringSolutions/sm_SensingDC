@@ -18,20 +18,21 @@ class I2C:
         self.i2c.open(self.bus)
 
 
-    def read_register(self,address,register,num_bytes,stop=False, delay:float=None):     # Write address, register_no  -- Read address, data
+    def read_register(self, device_address, register, num_bytes, stop=False, delay:float=None) -> list:
         """Read a number of registers from attached I2C device.
 
         :param int address:   I2C slave device address.
-        :param int register:  Memory register to read first data byte from.
+        :param register:      Memory register to read first data byte from. Single int <= 255 or list of ints each <= 255.
         :param int num_bytes: Number of sequential bytes to read.
         :paran bool stop:     (optional) If false, complete the reg write and data read in a single transaction.
-        :param float delay:   (optional) Seconds to sleep for between writing register and reading back data. Requires `stop=True` to be effective.
+        :param float delay:   (optional) Seconds to sleep for between writing register and reading back data.
         """
-        register = self._data_to_list(register) # accept multi-byte addresses
-        write_reg_addr = Msg.write(address, register)
-        read_reg_data = Msg.read(address,num_bytes)
+        if isinstance(register, int): # accept single-byte addresses as int, or multi-byte addresses as list only
+            register = [register]
+        write_reg_addr = Msg.write(device_address, register)
+        read_reg_data = Msg.read(device_address, num_bytes)
 
-        if stop:
+        if stop or (delay is not None): # allow supplying delay as a kwarg while not supplying stop
             self.i2c.i2c_rdwr(write_reg_addr)
             if delay:
                 time.sleep(delay)
@@ -42,7 +43,7 @@ class I2C:
         return list(read_reg_data)
 
 
-    def read(self, device_address:int, num_bytes:int):
+    def read(self, device_address:int, num_bytes:int) -> list:
         """Read bytes from a device on the I2C bus without specifying a memory register
 
         :param int device_address: I2C slave device address.
@@ -57,40 +58,23 @@ class I2C:
         """Write bytes to a device on the I2C bus without specifying a memory register
 
         :param int device_address: I2C slave device address.
-        :param data: int or list of ints (each max 255) to write to device.
+        :param data: Single int <= 255 or list of ints each <= 255 to write to device.
         """
-        data = self._data_to_list(data) # accept multi-byte data in single int
-        msg = Msg.write(device_address, data)
-        self.i2c.i2c_rdwr(msg)
+        if isinstance(data, int): # accept single-byte data as int, or multi-byte data as list only
+            data = [data]
+        write_data = Msg.write(device_address, data)
+        self.i2c.i2c_rdwr(write_data)
 
 
     def write_register(self, device_address:int, register:int, data):
         """Set memory address `register` on an I2C slave device to `data`.
 
         :param int device_address: I2C slave device address.
-        :param int register: Memory register to write to.
-        :param data: Single int or list of ints (each max 255) to write to device memory.
+        :param register: Memory register to write to. Single int <= 255 or list of ints each <= 255.
+        :param data: Single int <= 255 or list of ints each <= 255 to write to device memory.
         """
-        register = self._data_to_list(register) # accept multi-byte addresses
-        data = self._data_to_list(data) # accept multi-byte data in single int
+        if isinstance(register, int): # accept single-byte addresses as int, or multi-byte addresses as list only
+            register = [register]
+        if isinstance(data, int): # accept single-byte data as int, or multi-byte data as list only
+            data = [data]
         self.write(device_address, [*register, *data])
-
-
-    def _data_to_list(self, data):
-        """Turns an int into a list of ints < 255. If not an int, returns the input.
-
-        192 -> [192]
-        0xC0FFEE -> [192, 255, 238]
-        [192, 168] -> [192, 168]
-        """
-        if isinstance(data, int):
-            if data == 0:
-                return [0] # handle edge case where below loop would return [] rather than desired [0]
-            else:
-                data_list = []
-                while data > 0:
-                    data_list.insert(0, data & 0xFF)
-                    data = data >> 8
-                return data_list
-        else:
-            return data # unchanged
