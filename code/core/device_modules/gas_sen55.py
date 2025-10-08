@@ -40,14 +40,14 @@ class SEN55:
         # Check product name in device memory matches expectations
         name = self.get_product_name()
         if name[0:9] == [83, 69, 131, 78, 53, 85, 53, 0, 68]: # SEN55 in ASCII with checksum every 2 bytes.
-            print("read product name SEN55 as expected")
+            logger.info("read product name SEN55 as expected")
         else:
             error_message = f"Starting SEN55 but chip ID mismatch. Device detected at {self.i2c_address} but read {name}, expected [83, 69, 131, 78, 53, 85, 53, 0, 68 ...]"
-            logger.error(error_message)
+            logger.error(error_message) # this feels redundant, presumably the error is logged in the wider measurement context?
             raise ValueError(error_message)
 
-        logger.info("SEN55 serial number:", self.get_serial_number())
-        logger.info("SEN55 firmware version:", self.get_firmware_version())
+        logger.info("SEN55 serial number: " + str(self.get_serial_number()))
+        logger.info("SEN55 firmware version: " + str(self.get_firmware_version()))
 
         # Set to full power mode
         self.start_measurement()
@@ -80,23 +80,23 @@ class SEN55:
             raise ValueError("Unexpected value when polling SEN55 data ready. Possible CRC failure")
 
 
-    def get_product_name(self):
+    def get_product_name(self) -> list:
         """SEN50, SEN54 or SEN55 in ASCII with checksum every 2 bytes."""
         product_name = self.i2c.read_register(self.i2c_address, 0xD014, 48, stop=True, delay=0.02)
         return product_name # with CRC bytes included
 
 
-    def get_serial_number(self):
+    def get_serial_number(self) -> list:
         serial_number = self.i2c.read_register(self.i2c_address, 0xD033, 48, stop=True, delay=0.02)
         return serial_number # with CRC bytes included
 
 
-    def get_firmware_version(self):
+    def get_firmware_version(self) -> int:
         firmware_version = self.i2c.read_register(self.i2c_address, 0xD100, 3, stop=True, delay=0.02) # 1 byte f/w vn, 1 byte reserved and 1 CRC
         return firmware_version[0] # just firmware version integer. Expect 2.
 
 
-    def sample(self):
+    def sample(self) -> dict:
         """Sample all air metrics from the SEN55 sensor.
 
         :return dict Dictionary of particulate matter, voc/nox, temperature and humidity against variables set in when creating class instance
