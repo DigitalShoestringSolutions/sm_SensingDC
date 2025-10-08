@@ -58,20 +58,14 @@ class SEN55:
 
     def start_measurement(self):
         """Activate all parameter measurement mode."""
-        self.i2c.write(self.i2c_address, 0x0021)
+        self.i2c.write(self.i2c_address, [0x00, 0x21])
         time.sleep(0.05)
-
-
-    def stop_measurement(self):
-        """Return to idle mode."""
-        self.i2c.write(self.i2c_address, 0x0104)
-        time.sleep(0.2) # specified max execution time for stop command. Attempting next I2C transaction sooner may NAK -> Remote I/O error, or data will be 0xFF
 
 
     @property
     def data_ready(self):
         """Is the Data Ready flag currently set?"""
-        buf = self.i2c.read_register(self.i2c_address, 0x0202, 3, stop=True, delay=0.02) # 1 empty byte + 1 containing flat + 1 CRC
+        buf = self.i2c.read_register(self.i2c_address, [0x02, 0x02], 3, stop=True, delay=0.02) # 1 empty byte + 1 containing flat + 1 CRC
         if buf == [0, 1, 176]:
             return True
         elif buf == [0, 0, 129]:
@@ -82,17 +76,17 @@ class SEN55:
 
     def get_product_name(self) -> list:
         """SEN50, SEN54 or SEN55 in ASCII with checksum every 2 bytes."""
-        product_name = self.i2c.read_register(self.i2c_address, 0xD014, 48, stop=True, delay=0.02)
+        product_name = self.i2c.read_register(self.i2c_address, [0xD0, 0x14], 48, stop=True, delay=0.02)
         return product_name # with CRC bytes included
 
 
     def get_serial_number(self) -> list:
-        serial_number = self.i2c.read_register(self.i2c_address, 0xD033, 48, stop=True, delay=0.02)
+        serial_number = self.i2c.read_register(self.i2c_address, [0xD0, 0x33], 48, stop=True, delay=0.02)
         return serial_number # with CRC bytes included
 
 
     def get_firmware_version(self) -> int:
-        firmware_version = self.i2c.read_register(self.i2c_address, 0xD100, 3, stop=True, delay=0.02) # 1 byte f/w vn, 1 byte reserved and 1 CRC
+        firmware_version = self.i2c.read_register(self.i2c_address, [0xD1, 0x00], 3, stop=True, delay=0.02) # 1 byte f/w vn, 1 byte reserved and 1 CRC
         return firmware_version[0] # just firmware version integer. Expect 2.
 
 
@@ -106,12 +100,12 @@ class SEN55:
             if not self.data_ready:
                 raise ValueError("SEN5x data is not ready")
 
-            #self.i2c.write(self.i2c_address, 0x03C4) # Request data. Enter Read Measured Values command (0x03C4)
+            #self.i2c.write(self.i2c_address, [0x03, 0xC4]) # Request data. Enter Read Measured Values command (0x03C4)
             #time.sleep(0.02) # Wait 20ms for data ready. "After 20 ms, the read data header can be sent..." datasheet page 19
             #raw_data = self.i2c.read(self.i2c_address, 24) # Read 24 bytes from device. Each three bytes in a sequence of MSB, LSB, CRC. Reading from this reg resets the Data-Ready Flag
 
             # Or do the above 3 steps all in one:
-            raw_data = self.i2c.read_register(self.i2c_address, 0x03C4, 24, stop=True, delay=0.02)
+            raw_data = self.i2c.read_register(self.i2c_address, [0x03, 0xC4], 24, stop=True, delay=0.02)
 
             # Process raw data into floats
             pm1p0  = (raw_data[0] << 8 | raw_data[1])  / 10
