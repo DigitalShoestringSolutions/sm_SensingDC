@@ -102,7 +102,7 @@ class SEN55:
             attempt = 0
             while not self.data_ready:
                 attempt += 1
-                if attempt > 9
+                if attempt > 9:
                     raise core.exceptions.SampleError("SEN5x data is not ready")
                 time.sleep(0.1)
 
