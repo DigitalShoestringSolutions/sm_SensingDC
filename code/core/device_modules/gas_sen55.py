@@ -1,6 +1,7 @@
 import traceback
 import logging
 import time
+import core.exceptions
 
 logger = logging.getLogger(__name__)
 
@@ -97,8 +98,13 @@ class SEN55:
         """
 
         try:
-            if not self.data_ready:
-                raise ValueError("SEN5x data is not ready")
+            # Wait for data ready. After an additional 1s, throw an error.
+            attempt = 0
+            while not self.data_ready:
+                attempt += 1
+                if attempt > 9
+                    raise core.exceptions.SampleError("SEN5x data is not ready")
+                time.sleep(0.1)
 
             #self.i2c.write(self.i2c_address, [0x03, 0xC4]) # Request data. Enter Read Measured Values command (0x03C4)
             #time.sleep(0.02) # Wait 20ms for data ready. "After 20 ms, the read data header can be sent..." datasheet page 19
