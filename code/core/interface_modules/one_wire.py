@@ -4,28 +4,30 @@ import logging
 logger = logging.getLogger(__name__)
 
 class OneWire:
-    BASE_PATH='/sys/bus/w1/devices/'
-    def __init__(self,config):
-        self.sensor_id = config.get('sensor_id', None)
-        self.filename = config.get('filename',"w1_slave")
 
+    def __init__(self):  # supports GPIO4 only!
+        # would be nice to support other pins, or be able to apply a software pull-up.
+        self.devices_dir = "/sys/bus/w1/devices/" # dtoverlay for pin4
+
+        if not os.path.exists(self.self.devices_dir):
+            logger.error(f"One wire device not found at {self.self.devices_dir}")
         
-        if self.sensor_id is not None:
-            self.sensor_filepath = os.path.join(self.BASE_PATH,self.sensor_id,self.filename)
-        else: # If sensor not specified - auto detect the first sensor
-            with os.scandir(self.BASE_PATH) as file_iterator:
-                for file in file_iterator:
-                    print(file)
-                    # if file matches:
-                    #     self.sensor_filepath = file
+    def get_devices_on_bus(self) -> list:
+        # Detect devices
+        devices = os.listdir(self.devices_dir)
 
-        
+        # If w1_bus_master1 is in devices list, remove it
+        try:
+            devices.remove("w1_bus_master1")
+        except ValueError:
+            pass
 
+        return devices
 
-    def initialise(self):
-        if not os.path.exists(self.sensor_filepath):
-            logger.error(f"One wire device not found at {self.sensor_filepath}")
+    def _get_filepath(self, id:str) -> str:
+        return self.devices_dir + id + "/w1_slave"
 
-    def read(self):
-        #TODO
-        pass
+    def read_file(self, id):
+        with open(self._get_filepath(id), 'r') as f:
+            return f.readlines()
+
