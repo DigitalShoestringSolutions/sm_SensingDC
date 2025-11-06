@@ -39,6 +39,7 @@ class DS18B20:
         if self.sensor_id is not None:
             if self.sensor_id in all_devices_on_bus:
                 self.w1_id == self.sensor_id
+                logger.debug(f"Accepted {self.SENSOR_TYPE} sensor_id {self.sensor_id} set in config")
             else:
                 raise ValueError(f"{self.SENSOR_TYPE} sensor id set manually but id {self.sensor_id} was not found on OneWire Bus")
 
@@ -48,10 +49,12 @@ class DS18B20:
             for device in all_devices_on_bus:
                 if device.startswith(self.ONEWIRE_ID_PREFIX):  # Suitable sensor prefix depends on exactly which sensor type is being used
                     suitable_sensors_on_bus.append(device)
+            logger.debug(f"suitable {self.SENSOR_TYPE} devices on w1 bus: {suitable_sensors_on_bus}")
 
             # Select one of those according to channel config
             try:
                 self.w1_id = suitable_sensors_on_bus[self.channel - 1]  # channel config starts at 1
+                logger.debug(f"Sensor id {self.w1_id} found for {self.SENSOR_TYPE} channel {self.channel}")
             except IndexError as e:
                 # Add helpful info to the error message
                 e.add_note(f"{self.SENSOR_TYPE} channel {self.channel} requested, but only {len(suitable_sensors_on_bus)} {self.SENSOR_TYPE}s were found on the OneWire bus")
@@ -65,7 +68,8 @@ class DS18B20:
         
         # Check CRC
         if file[0].strip()[-3:] != "YES":
-            raise ValueError(f"{self.SENSOR_TYPE} CRC failure")
+            raise ValueError(f"{self.SENSOR_TYPE} id {self.w1_id} CRC failure")
+        logger.debug(f"{self.SENSOR_TYPE} id {self.w1_id} CRC passed")
 
         # Extract temperature value
         temperature_str = file[1].strip().rsplit('t=')[1]

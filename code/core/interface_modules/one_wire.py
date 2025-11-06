@@ -31,11 +31,36 @@ class OneWire:
         return devices
 
 
-    def _get_filepath(self, id:str) -> str:
-        return self.devices_dir + id + "/w1_slave"
+    def _get_filepath(self, id: str, validate: bool = True) -> str:
+        """Get the full filepath of a device on the w1 bus
+
+        :param str id:        w1 hex address, directory name
+        :param bool validate: (optional) Test if the file exists before returning. Default True.
+        """
+        filepath = self.devices_dir + id + "/w1_slave"
+
+        # Validate file exists
+        if validate:
+            try:
+                with open(filepath, "r"):
+                    pass
+            except FileNotFoundError as e:
+                e.add_note(f"Attempting to communicate with OneWire device {id} but file {filepath} not found")
+                raise
+
+        return filepath
 
 
     def read_file(self, id):
-        with open(self._get_filepath(id), 'r') as f:
-            return f.readlines()
+        filepath = self._get_filepath(id) 
+        with open(filepath, 'r') as f:
+            lines = f.readlines()
+
+            try:
+                line0 = lines[0] # Test if file is empty by seeing if first line exists
+            except IndexError as e:
+                e.add_note(f"OneWire device file {filepath} is empty, communication unsuccessful?")
+                raise
+
+            return lines
 
