@@ -4,28 +4,63 @@ import logging
 logger = logging.getLogger(__name__)
 
 class OneWire:
-    BASE_PATH='/sys/bus/w1/devices/'
-    def __init__(self,config):
-        self.sensor_id = config.get('sensor_id', None)
-        self.filename = config.get('filename',"w1_slave")
 
-        
-        if self.sensor_id is not None:
-            self.sensor_filepath = os.path.join(self.BASE_PATH,self.sensor_id,self.filename)
-        else: # If sensor not specified - auto detect the first sensor
-            with os.scandir(self.BASE_PATH) as file_iterator:
-                for file in file_iterator:
-                    print(file)
-                    # if file matches:
-                    #     self.sensor_filepath = file
-
-        
+    def __init__(self, config={}):  # :param config not used but must be handled
+        # supports GPIO4 only!
+        # would be nice to support other pins, or be able to apply a software pull-up.
+        self.devices_dir = "/sys/bus/w1/devices/"  # dtoverlay for pin4
 
 
     def initialise(self):
-        if not os.path.exists(self.sensor_filepath):
-            logger.error(f"One wire device not found at {self.sensor_filepath}")
+        if os.path.exists(self.devices_dir):
+            logger.debug(f"One wire bus found at {self.devices_dir}")
+        else:
+            logger.error(f"One wire bus not found at {self.devices_dir}")
 
-    def read(self):
-        #TODO
-        pass
+
+    def get_devices_on_bus(self) -> list:
+        # Detect devices
+        devices = os.listdir(self.devices_dir)
+
+        # If w1_bus_master1 is in devices list, remove it
+        try:
+            devices.remove("w1_bus_master1")
+        except ValueError:
+            pass
+
+        return devices
+
+
+    def _get_filepath(self, id: str, validate: bool = True) -> str:
+        """Get the full filepath of a device on the w1 bus
+
+        :param str id:        w1 hex address, directory name
+        :param bool validate: (optional) Test if the file exists before returning. Default True.
+        """
+        filepath = self.devices_dir + id + "/w1_slave"
+
+        # Validate file exists
+        if validate:
+            try:
+                with open(filepath, "r"):
+                    pass
+            except FileNotFoundError as e:
+                e.add_note(f"Attempting to communicate with OneWire device {id} but file {filepath} not found")
+                raise
+
+        return filepath
+
+
+    def read_file(self, id):
+        filepath = self._get_filepath(id) 
+        with open(filepath, 'r') as f:
+            lines = f.readlines()
+
+            try:
+                line0 = lines[0] # Test if file is empty by seeing if first line exists
+            except IndexError as e:
+                e.add_note(f"OneWire device file {filepath} is empty, communication unsuccessful?")
+                raise
+
+            return lines
+
