@@ -40,6 +40,26 @@ class MockDeviceRandom:
             logger.error(traceback.format_exc())
             raise e
 
+
+class MockDeviceRandomInt:
+
+    def __init__(self, config, variables):
+        self.min = config.get("min", 0)
+        self.max = config.get("max")
+
+        self.variable = variables["variable"]
+
+    def initialise(self, interface):
+        pass
+
+    def sample(self):
+        try:
+            return {self.variable: random.randint(self.min, self.max)}
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            raise e
+
+
 # Not yet tested - used calculation/gen_simulation.py/PeriodicMask as alternative
 class MockPeriodicDevice:
     def __init__(self, config, variables):
