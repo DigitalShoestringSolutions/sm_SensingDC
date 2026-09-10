@@ -78,7 +78,13 @@ def load_config(filename, src):
         while True:
             logger.critical("Config File not found - Going to sleep to avoid unnecessary restarts")     
             time.sleep(36000)        
-
+    except IsADirectoryError:
+        logger.critical(
+            f'Invalid Config Path - "{filename}" specified by {src} is a directory, not a file.')
+        logger.critical("Unable to start solution - please specify a valid file path for the config.")
+        while True:
+            logger.critical("Config path is a directory - Going to sleep to avoid unnecessary restarts")     
+            time.sleep(36000)
 
 def do_validate(config, schema, label=""):
     try:

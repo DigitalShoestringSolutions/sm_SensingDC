@@ -27,15 +27,22 @@ class MockDeviceRandom:
     def __init__(self, config, variables):
         self.min = config.get('min',0)
         self.max = config.get('max')
+        self.config= config
 
-        self.variable = variables['variable']
+        self.variables = variables
 
     def initialise(self, interface):
         pass
 
     def sample(self):
         try:
-            return {self.variable: random.uniform(self.min, self.max)}
+            return {
+                name: random.uniform(
+                    self.config.get(key, {}).get("min", self.min),
+                    self.config.get(key, {}).get("max", self.max),
+                )
+                for key, name in self.variables.items()
+            }
         except Exception as e:
             logger.error(traceback.format_exc())
             raise e
